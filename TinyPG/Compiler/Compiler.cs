@@ -184,19 +184,22 @@ namespace TinyPG.Compiler
 			else
 			{
 				output += "Parse was successful." + "\r\n";
-				output += "Evaluating...";
+				if (Grammar.Directives["Evaluation"]["Generate"].ToLowerInvariant() == "true")
+				{
+					output += "Evaluating...";
 
-				// parsing was successful, now try to evaluate... this should really be done on a seperate thread.
-				// e.g. if the thread hangs, it will hang the entire application (!)
-				try
-				{
-					compilerresult.Value = itree.Eval(null);
-					output += "\r\nResult: " + (compilerresult.Value == null ? "null" : compilerresult.Value.ToString());
-				}
-				catch (Exception exc)
-				{
-					output += "\r\nException occurred: " + exc.Message;
-					output += "\r\nStacktrace: " + exc.StackTrace;
+					// parsing was successful, now try to evaluate... this should really be done on a seperate thread.
+					// e.g. if the thread hangs, it will hang the entire application (!)
+					try
+					{
+						compilerresult.Value = ((IEvaluable)itree).Eval(null);
+						output += "\r\nResult: " + (compilerresult.Value == null ? "null" : compilerresult.Value.ToString());
+					}
+					catch (Exception exc)
+					{
+						output += "\r\nException occurred: " + exc.Message;
+						output += "\r\nStacktrace: " + exc.StackTrace;
+					}
 				}
 
 			}

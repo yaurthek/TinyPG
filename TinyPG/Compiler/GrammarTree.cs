@@ -148,11 +148,12 @@ namespace TinyPG.Compiler
 				case "Parser":
 				case "Scanner":
 				case "ParseTree":
+				case "Evaluation":
 				case "TextHighlighter":
 					if (g.Directives.Find(name) != null)
 					{
 						tree.Errors.Add(new ParseError("Directive '" + name + "' is already defined", 0x1030, node.Nodes[1]));
-						return null; ;
+						return null;
 					}
 					break;
 				default:
@@ -211,8 +212,10 @@ namespace TinyPG.Compiler
 				case "Scanner":
 				case "ParseTree":
 				case "TextHighlighter":
-					names.Add("Generate");
 					names.Add("FileName");
+					goto case "Evaluation";
+				case "Evaluation":
+					names.Add("Generate");
 					break;
 				default:
 					return null;

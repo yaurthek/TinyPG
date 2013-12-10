@@ -200,6 +200,15 @@ namespace TinyPG.Compiler
 			if (!d.ContainsKey("Generate"))
 				d["Generate"] = "True"; // generate parsetree by default
 
+			d = Directives.Find("Evaluation");
+			if (d == null)
+			{
+				d = new Directive("Evaluation");
+				Directives.Add(d);
+			}
+			if (!d.ContainsKey("Generate"))
+				d["Generate"] = "True"; // generate evaluation code by default
+
 			d = Directives.Find("TextHighlighter");
 			if (d == null)
 			{

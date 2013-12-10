@@ -79,16 +79,7 @@ namespace <%Namespace%>
 			foreach (ParseNode n in node.Nodes)
 				PrintNode(sb, n, indent + 2);
 		}
-
-		/// <summary>
-		/// this is the entry point for executing and evaluating the parse tree.
-		/// </summary>
-		/// <param name="paramlist">additional optional input parameters</param>
-		/// <returns>the output of the evaluation function</returns>
-		public object Eval(params object[] paramlist)
-		{
-			return Nodes[0].Eval(this, paramlist);
-		}
+<%EvalEntryPoint%>
 	}
 
 	[Serializable]
@@ -126,54 +117,7 @@ namespace <%Namespace%>
 		{
 			return this.Text ?? "";
 		}
-
-		protected object GetValue(ParseTree tree, TokenType type, int index)
-		{
-			return GetValue(tree, type, ref index);
-		}
-
-		protected object GetValue(ParseTree tree, TokenType type, ref int index)
-		{
-			object o = null;
-			if (index < 0) return o;
-
-			// left to right
-			foreach (ParseNode node in Nodes)
-			{
-				if (node.Token.Type == type)
-				{
-					index--;
-					if (index < 0)
-					{
-						o = node.Eval(tree);
-						break;
-					}
-				}
-			}
-			return o;
-		}
-
-		/// <summary>
-		/// this implements the evaluation functionality, cannot be used directly
-		/// </summary>
-		/// <param name="tree">the parsetree itself</param>
-		/// <param name="paramlist">optional input parameters</param>
-		/// <returns>a partial result of the evaluation</returns>
-		internal object Eval(ParseTree tree, params object[] paramlist)
-		{
-			object Value = null;
-
-			switch (Token.Type)
-			{
-<%EvalSymbols%>
-				default:
-					Value = Token.Text;
-					break;
-			}
-			return Value;
-		}
-
-<%VirtualEvalMethods%>
+<%EvalSwitch%><%VirtualEvalMethods%>
 	}
 
 	#endregion ParseTree

@@ -19,45 +19,120 @@ namespace TinyPG.CodeGenerators.CSharp
 
 			// copy the parse tree file (optionally)
 			string parsetree = File.ReadAllText(Grammar.GetTemplatePath() + templateName);
-
+			string getvaluehelpers = "";
+			string evalentrypoint = "";
+			StringBuilder evalswitch = new StringBuilder();
 			StringBuilder evalsymbols = new StringBuilder();
 			StringBuilder evalmethods = new StringBuilder();
 
-			// build non terminal tokens
-			foreach (Symbol s in Grammar.GetNonTerminals())
+			bool generateEvaluationCode = Grammar.Directives["Evaluation"]["Generate"].ToLowerInvariant() == "true";
+
+			if (generateEvaluationCode)
 			{
-				evalsymbols.AppendLine("				case TokenType." + s.Name + ":");
-				evalsymbols.AppendLine("					Value = Eval" + s.Name + "(tree, paramlist);");
-				//evalsymbols.AppendLine("				Value = Token.Text;");
-				evalsymbols.AppendLine("					break;");
+				// build non terminal tokens
+				foreach (Symbol s in Grammar.GetNonTerminals())
+				{
+					evalsymbols.AppendLine("				case TokenType." + s.Name + ":");
+					evalsymbols.AppendLine("					Value = Eval" + s.Name + "(tree, paramlist);");
+					//evalsymbols.AppendLine("				Value = Token.Text;");
+					evalsymbols.AppendLine("					break;");
 
-				evalmethods.AppendLine("		protected virtual object Eval" + s.Name + "(ParseTree tree, params object[] paramlist)");
-				evalmethods.AppendLine("		{");
-				if (s.CodeBlock != null)
-				{
-					// paste user code here
-					evalmethods.AppendLine(FormatCodeBlock(s as NonTerminalSymbol));
-				}
-				else
-				{
-					if (s.Name == "Start") // return a nice warning message from root object.
-						evalmethods.AppendLine("			return \"Could not interpret input; no semantics implemented.\";");
+					evalmethods.AppendLine();
+					evalmethods.AppendLine("		protected virtual object Eval" + s.Name + "(ParseTree tree, params object[] paramlist)");
+					evalmethods.AppendLine("		{");
+					if (s.CodeBlock != null)
+					{
+						// paste user code here
+						evalmethods.AppendLine(FormatCodeBlock(s as NonTerminalSymbol));
+					}
 					else
-						evalmethods.AppendLine("			foreach (var node in Nodes)\r\n" +
-											   "				node.Eval(tree, paramlist);\r\n" +
-											   "			return null;");
+					{
+						if (s.Name == "Start") // return a nice warning message from root object.
+							evalmethods.AppendLine("			return \"Could not interpret input; no semantics implemented.\";");
+						else
+							evalmethods.AppendLine("			foreach (var node in Nodes)\r\n" +
+												   "				node.Eval(tree, paramlist);\r\n" +
+												   "			return null;");
 
-					// otherwise simply not implemented!
+						// otherwise simply not implemented!
+					}
+					evalmethods.AppendLine("		}\r\n");
 				}
-				evalmethods.AppendLine("		}\r\n");
+
+				evalentrypoint = @"
+		/// <summary>
+		/// this is the entry point for executing and evaluating the parse tree.
+		/// </summary>
+		/// <param name=""paramlist"">additional optional input parameters</param>
+		/// <returns>the output of the evaluation function</returns>
+		public object Eval(params object[] paramlist)
+		{
+			return Nodes[0].Eval(this, paramlist);
+		}";
+
+				getvaluehelpers = @"
+protected object GetValue(ParseTree tree, TokenType type, int index)
+		{
+			return GetValue(tree, type, ref index);
+		}
+
+		protected object GetValue(ParseTree tree, TokenType type, ref int index)
+		{
+			object o = null;
+			if (index < 0) return o;
+
+			// left to right
+			foreach (ParseNode node in Nodes)
+			{
+				if (node.Token.Type == type)
+				{
+					index--;
+					if (index < 0)
+					{
+						o = node.Eval(tree);
+						break;
+					}
+				}
 			}
+			return o;
+		}";
+
+				evalswitch.Append(
+@"
+		/// <summary>
+		/// this implements the evaluation functionality, cannot be used directly
+		/// </summary>
+		/// <param name=""tree"">the parsetree itself</param>
+		/// <param name=""paramlist"">optional input parameters</param>
+		/// <returns>a partial result of the evaluation</returns>
+		internal object Eval(ParseTree tree, params object[] paramlist)
+		{
+			object Value = null;
+
+			switch (Token.Type)
+			{
+"
+
+					+ evalsymbols.ToString() +
+
+  @"
+				default:
+					Value = Token.Text;
+					break;
+			}
+			return Value;
+		}");
+
+			}
+
 
 			if (Debug)
 			{
 				parsetree = parsetree.Replace(@"<%Namespace%>", "TinyPG.Debug");
 				parsetree = parsetree.Replace(@"<%ParseError%>", " : TinyPG.Debug.IParseError");
 				parsetree = parsetree.Replace(@"<%ParseErrors%>", "List<TinyPG.Debug.IParseError>");
-				parsetree = parsetree.Replace(@"<%IParseTree%>", ", TinyPG.Debug.IParseTree");
+				parsetree = parsetree.Replace(@"<%IParseTree%>",
+					", TinyPG.Debug.IParseTree" + (generateEvaluationCode ? ", TinyPG.Debug.IEvaluable" : ""));
 				parsetree = parsetree.Replace(@"<%IParseNode%>", " : TinyPG.Debug.IParseNode");
 				parsetree = parsetree.Replace(@"<%ITokenGet%>", "public IToken IToken { get {return (IToken)Token;} }");
 
@@ -75,7 +150,8 @@ namespace TinyPG.CodeGenerators.CSharp
 				parsetree = parsetree.Replace(@"<%INodesGet%>", "");
 			}
 
-			parsetree = parsetree.Replace(@"<%EvalSymbols%>", evalsymbols.ToString());
+			parsetree = parsetree.Replace(@"<%EvalEntryPoint%>", evalentrypoint);
+			parsetree = parsetree.Replace(@"<%EvalSwitch%>", evalswitch.ToString());
 			parsetree = parsetree.Replace(@"<%VirtualEvalMethods%>", evalmethods.ToString());
 
 			return parsetree;

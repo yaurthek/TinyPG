@@ -25,8 +25,12 @@ namespace TinyPG.Debug
 
 	public interface IParseTree : IParseNode
 	{
-		object Eval(params object[] paramlist);
 		string PrintTree();
+	}
+
+	public interface IEvaluable : IParseTree
+	{
+		object Eval(params object[] paramlist);
 	}
 
 	public interface IParseNode
