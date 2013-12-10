@@ -29,4 +29,4 @@ These are the new features and fixes we have added to the original code:
  - Unexpected token errors now display the offending character.
  - New  `<% @Evaluation Generate="True" %>` directive allowing to disable the generation of the evaluation code.
 
-# Warning: The VB templates are currently not up to date, and untested.
+**Warning: The VB templates are currently not up to date, and untested.**
