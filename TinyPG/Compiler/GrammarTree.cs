@@ -472,7 +472,7 @@ namespace TinyPG.Compiler
                 Symbol s = symbols.Find(match.Groups["var"].Value);
                 if (s == null)
                 {
-                    tree.Errors.Add(new ParseError("Variable $" + match.Groups["var"].Value + " cannot be matched.", 0x1016, node.Token.File, node.Token.StartPos + match.Groups["var"].Index, node.Token.StartPos + match.Groups["var"].Index, match.Groups["var"].Length));
+                    tree.Errors.Add(new ParseError("Variable $" + match.Groups["var"].Value + " cannot be matched.", 0x1016, node.Token.File, 0, node.Token.StartPosition + match.Groups["var"].Index, node.Token.StartPosition + match.Groups["var"].Index, match.Groups["var"].Length));
                     break; // error situation
                 }
             }
