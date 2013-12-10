@@ -27,7 +27,7 @@ namespace TinyPG.Highlighter
         private Token LookAheadToken;
         private List<TokenType> Tokens;
         private List<TokenType> SkipList; // tokens to be skipped
-        private readonly TokenType FileAndLine;
+
 
         public Scanner()
         {
@@ -334,18 +334,6 @@ namespace TinyPG.Highlighter
                     Skipped = new List<Token>(); //reset skips
                 }
 
-                // Check to see if the parsed token wants to 
-                // alter the file and line number.
-                if (tok.Type == FileAndLine)
-                {
-                    var match = Patterns[tok.Type].Match(tok.Text);
-                    var fileMatch = match.Groups["File"];
-                    if (fileMatch.Success)
-                        currentFile = fileMatch.Value;
-                    var lineMatch = match.Groups["Line"];
-                    if (lineMatch.Success)
-                        currentline = int.Parse(lineMatch.Value);
-                }
             }
             while (SkipList.Contains(tok.Type));
 

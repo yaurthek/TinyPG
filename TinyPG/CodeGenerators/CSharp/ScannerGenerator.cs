@@ -23,6 +23,7 @@ namespace TinyPG.CodeGenerators.CSharp
             StringBuilder tokentype = new StringBuilder();
             StringBuilder regexps = new StringBuilder();
             StringBuilder skiplist = new StringBuilder();
+			string fileandline = null;
 
             foreach (TerminalSymbol s in Grammar.SkipSymbols)
             {
@@ -30,7 +31,7 @@ namespace TinyPG.CodeGenerators.CSharp
             }
 
             if (Grammar.FileAndLine != null)
-                skiplist.AppendLine("            FileAndLine = TokenType." + Grammar.FileAndLine.Name + ";");
+				fileandline = "        private readonly TokenType FileAndLine = TokenType." + Grammar.FileAndLine.Name + ";";
 
             // build system tokens
             tokentype.AppendLine("\r\n            //Non terminal tokens:");
@@ -66,10 +67,34 @@ namespace TinyPG.CodeGenerators.CSharp
                 tokentype.Append(Helper.Outline(s.Name, 3, "= " + String.Format("{0:d}", counter), 5));
                 counter++;
             }
-
+			
             scanner = scanner.Replace(@"<%SkipList%>", skiplist.ToString());
             scanner = scanner.Replace(@"<%RegExps%>", regexps.ToString());
             scanner = scanner.Replace(@"<%TokenType%>", tokentype.ToString());
+
+			if (fileandline != null)
+			{
+				scanner = scanner.Replace(@"<%FileAndLine%>", fileandline);
+				scanner = scanner.Replace(@"<%FileAndLineCheck%>",
+@"
+                // Check to see if the parsed token wants to 
+                // alter the file and line number.
+                if (tok.Type == FileAndLine)
+                {
+                    var match = Patterns[tok.Type].Match(tok.Text);
+                    var fileMatch = match.Groups[""File""];
+                    if (fileMatch.Success)
+                        currentFile = fileMatch.Value;
+                    var lineMatch = match.Groups[""Line""];
+                    if (lineMatch.Success)
+                        currentline = int.Parse(lineMatch.Value);
+                }");
+			}
+			else
+			{
+				scanner = scanner.Replace(@"<%FileAndLine%>", "");
+				scanner = scanner.Replace(@"<%FileAndLineCheck%>", "");
+			}
 
             if (Debug)
             {
