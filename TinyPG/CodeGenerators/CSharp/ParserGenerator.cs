@@ -54,7 +54,9 @@ namespace TinyPG.CodeGenerators.CSharp
 			sb.AppendLine("		private void Parse" + s.Name + "(ParseNode parent)" + Helper.AddComment("NonTerminalSymbol: " + s.Name));
 			sb.AppendLine("		{");
 			sb.AppendLine("			Token tok;");
+			sb.AppendLine("#pragma warning disable 0168 //Suppress \"The variable 'n' is declared but never used\" warning.");
 			sb.AppendLine("			ParseNode n;");
+			sb.AppendLine("#pragma warning restore 0168");
 			sb.AppendLine("			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType." + s.Name + "), \"" + s.Name + "\");");
 			sb.AppendLine("			parent.Nodes.Add(node);");
 			sb.AppendLine("");
