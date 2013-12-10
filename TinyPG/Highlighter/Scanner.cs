@@ -413,7 +413,6 @@ namespace TinyPG.Highlighter
 		public int StartPosition { get; set; }
 		public int EndPosition { get; set; }
 		public string Text { get; set; }
-		public object Value { get; set; }
 
 		/// <summary>
 		///  contains all prior skipped symbols
@@ -423,7 +422,7 @@ namespace TinyPG.Highlighter
 		public int Length { get { return EndPosition - StartPosition; } }
 
 		[XmlAttribute]
-		public TokenType Type;
+		public TokenType Type { get; set; }
 
 		public Token()
 			: this(0, 0)
@@ -436,7 +435,6 @@ namespace TinyPG.Highlighter
 			StartPosition = start;
 			EndPosition = end;
 			Text = ""; // must initialize with empty string, may cause null reference exceptions otherwise
-			Value = null;
 		}
 
 		public void UpdateRange(Token token)
