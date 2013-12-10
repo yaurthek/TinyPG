@@ -17,7 +17,7 @@
 
 	
 [Color(255, 0, 0)]	DIRECTIVESTRING        -> @"@?\""(\""\""|[^\""])*(""|\n)";
-[Color(128, 0, 255)]	DIRECTIVEKEYWORD	-> @"^(@TinyPG|@Parser|@Scanner|@Grammar|@ParseTree|@TextHighlighter)";
+[Color(128, 0, 255)]	DIRECTIVEKEYWORD	-> @"^(@TinyPG|@Parser|@Scanner|@Grammar|@ParseTree|@TextHighlighter|@Evaluation)";
 			DIRECTIVESYMBOL	-> @"^(@|(%[^>])|=|"")+?";
 			DIRECTIVENONKEYWORD	-> @"[^%@=""]+";
 [Color(128, 0, 128)]	DIRECTIVEOPEN		-> @"<%";

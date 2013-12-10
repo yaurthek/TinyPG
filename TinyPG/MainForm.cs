@@ -117,6 +117,7 @@ namespace TinyPG
 			codecomplete.Enabled = false;
 			directivecomplete = new AutoComplete(textEditor);
 			directivecomplete.Enabled = false;
+			directivecomplete.WordList.Items.Add("@Evaluation");
 			directivecomplete.WordList.Items.Add("@ParseTree");
 			directivecomplete.WordList.Items.Add("@Parser");
 			directivecomplete.WordList.Items.Add("@Scanner");
