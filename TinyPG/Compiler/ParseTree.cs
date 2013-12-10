@@ -25,13 +25,13 @@ namespace TinyPG
 		public string Message { get; private set; }
 
 		// just for the sake of serialization
-		public ParseError() {}
+		public ParseError() { }
 
-		public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) {}
+		public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) { }
 
-		public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) {}
+		public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) { }
 
-		public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) {}
+		public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) { }
 
 		public ParseError(string message, int code, string file, int line, int col, int pos, int length)
 		{
@@ -53,7 +53,8 @@ namespace TinyPG
 
 		public List<Token> Skipped { get; set; }
 
-		public ParseTree() : base(new Token(), "ParseTree")
+		public ParseTree()
+			: base(new Token(), "ParseTree")
 		{
 			Token.Type = TokenType.Start;
 			Token.Text = "Root";
@@ -70,7 +71,6 @@ namespace TinyPG
 
 		private void PrintNode(StringBuilder sb, ParseNode node, int indent)
 		{
-			
 			string space = "".PadLeft(indent, ' ');
 
 			sb.Append(space);
@@ -79,7 +79,7 @@ namespace TinyPG
 			foreach (ParseNode n in node.Nodes)
 				PrintNode(sb, n, indent + 2);
 		}
-		
+
 		/// <summary>
 		/// this is the entry point for executing and evaluating the parse tree.
 		/// </summary>
@@ -95,9 +95,9 @@ namespace TinyPG
 	[XmlInclude(typeof(ParseTree))]
 	public partial class ParseNode
 	{
-		
+
 		public List<ParseNode> Nodes { get; protected set; }
-		
+
 		[XmlIgnore] // avoid circular references when serializing
 		public ParseNode Parent { get; set; }
 		public Token Token { get; set; } // the token/rule
@@ -106,7 +106,7 @@ namespace TinyPG
 		/// text to display in parse tree 
 		/// </summary>
 		[XmlIgnore] // skip redundant text (is part of Token)
-		public string Text { get; set; } 
+		public string Text { get; set; }
 
 		public virtual ParseNode CreateNode(Token token, string text)
 		{
@@ -121,7 +121,7 @@ namespace TinyPG
 			this.Text = text;
 			this.Nodes = new List<ParseNode>();
 		}
-		
+
 		public override string ToString()
 		{
 			return this.Text ?? "";
@@ -152,7 +152,6 @@ namespace TinyPG
 			}
 			return o;
 		}
-
 		/// <summary>
 		/// this implements the evaluation functionality, cannot be used directly
 		/// </summary>
@@ -208,11 +207,11 @@ namespace TinyPG
 			}
 			return Value;
 		}
-
 		protected virtual object EvalStart(ParseTree tree, params object[] paramlist)
 		{
 			return "Could not interpret input; no semantics implemented.";
 		}
+
 
 		protected virtual object EvalDirective(ParseTree tree, params object[] paramlist)
 		{
@@ -221,12 +220,14 @@ namespace TinyPG
 			return null;
 		}
 
+
 		protected virtual object EvalNameValue(ParseTree tree, params object[] paramlist)
 		{
 			foreach (var node in Nodes)
 				node.Eval(tree, paramlist);
 			return null;
 		}
+
 
 		protected virtual object EvalExtProduction(ParseTree tree, params object[] paramlist)
 		{
@@ -235,12 +236,14 @@ namespace TinyPG
 			return null;
 		}
 
+
 		protected virtual object EvalAttribute(ParseTree tree, params object[] paramlist)
 		{
 			foreach (var node in Nodes)
 				node.Eval(tree, paramlist);
 			return null;
 		}
+
 
 		protected virtual object EvalParams(ParseTree tree, params object[] paramlist)
 		{
@@ -249,12 +252,14 @@ namespace TinyPG
 			return null;
 		}
 
+
 		protected virtual object EvalParam(ParseTree tree, params object[] paramlist)
 		{
 			foreach (var node in Nodes)
 				node.Eval(tree, paramlist);
 			return null;
 		}
+
 
 		protected virtual object EvalProduction(ParseTree tree, params object[] paramlist)
 		{
@@ -263,12 +268,14 @@ namespace TinyPG
 			return null;
 		}
 
+
 		protected virtual object EvalRule(ParseTree tree, params object[] paramlist)
 		{
 			foreach (var node in Nodes)
 				node.Eval(tree, paramlist);
 			return null;
 		}
+
 
 		protected virtual object EvalSubrule(ParseTree tree, params object[] paramlist)
 		{
@@ -277,12 +284,14 @@ namespace TinyPG
 			return null;
 		}
 
+
 		protected virtual object EvalConcatRule(ParseTree tree, params object[] paramlist)
 		{
 			foreach (var node in Nodes)
 				node.Eval(tree, paramlist);
 			return null;
 		}
+
 
 		protected virtual object EvalSymbol(ParseTree tree, params object[] paramlist)
 		{
@@ -293,6 +302,6 @@ namespace TinyPG
 
 
 	}
-	
+
 	#endregion ParseTree
 }

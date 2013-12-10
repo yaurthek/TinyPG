@@ -7,17 +7,17 @@ namespace TinyPG.Highlighter
 {
 	#region Parser
 
-	public partial class Parser 
+	public partial class Parser
 	{
 		private Scanner scanner;
 		private ParseTree tree;
-		
+
 		public Parser(Scanner scanner)
 		{
 			this.scanner = scanner;
 		}
 
-		 public ParseTree Parse(string input)
+		public ParseTree Parse(string input)
 		{
 			return Parse(input, "", new ParseTree());
 		}
@@ -41,12 +41,14 @@ namespace TinyPG.Highlighter
 		private void ParseStart(ParseNode parent) // NonTerminalSymbol: Start
 		{
 			Token tok;
+#pragma warning disable 0168 //Suppress "The variable 'n' is declared but never used" warning.
 			ParseNode n;
+#pragma warning restore 0168
 			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType.Start), "Start");
 			parent.Nodes.Add(node);
 
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.GRAMMARCOMMENTLINE, TokenType.GRAMMARCOMMENTBLOCK, TokenType.ATTRIBUTEOPEN, TokenType.GRAMMARSTRING, TokenType.GRAMMARARROW, TokenType.GRAMMARNONKEYWORD, TokenType.GRAMMARKEYWORD, TokenType.GRAMMARSYMBOL, TokenType.CODEBLOCKOPEN, TokenType.DIRECTIVEOPEN); // ZeroOrMore Rule
 			while (tok.Type == TokenType.GRAMMARCOMMENTLINE
 				|| tok.Type == TokenType.GRAMMARCOMMENTBLOCK
@@ -86,15 +88,16 @@ namespace TinyPG.Highlighter
 						tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found.", 0x0002, tok));
 						break;
 				} // Choice Rule
-			tok = scanner.LookAhead(TokenType.GRAMMARCOMMENTLINE, TokenType.GRAMMARCOMMENTBLOCK, TokenType.ATTRIBUTEOPEN, TokenType.GRAMMARSTRING, TokenType.GRAMMARARROW, TokenType.GRAMMARNONKEYWORD, TokenType.GRAMMARKEYWORD, TokenType.GRAMMARSYMBOL, TokenType.CODEBLOCKOPEN, TokenType.DIRECTIVEOPEN); // ZeroOrMore Rule
+				tok = scanner.LookAhead(TokenType.GRAMMARCOMMENTLINE, TokenType.GRAMMARCOMMENTBLOCK, TokenType.ATTRIBUTEOPEN, TokenType.GRAMMARSTRING, TokenType.GRAMMARARROW, TokenType.GRAMMARNONKEYWORD, TokenType.GRAMMARKEYWORD, TokenType.GRAMMARSYMBOL, TokenType.CODEBLOCKOPEN, TokenType.DIRECTIVEOPEN); // ZeroOrMore Rule
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.Scan(TokenType.EOF); // Terminal Rule: EOF
-			n = node.CreateNode(tok, tok.ToString() );
+			n = node.CreateNode(tok, tok.ToString());
 			node.Token.UpdateRange(tok);
 			node.Nodes.Add(n);
-			if (tok.Type != TokenType.EOF) {
+			if (tok.Type != TokenType.EOF)
+			{
 				tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.EOF.ToString(), 0x1001, tok));
 				return;
 			}
@@ -105,7 +108,9 @@ namespace TinyPG.Highlighter
 		private void ParseCommentBlock(ParseNode parent) // NonTerminalSymbol: CommentBlock
 		{
 			Token tok;
+#pragma warning disable 0168 //Suppress "The variable 'n' is declared but never used" warning.
 			ParseNode n;
+#pragma warning restore 0168
 			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType.CommentBlock), "CommentBlock");
 			parent.Nodes.Add(node);
 
@@ -115,20 +120,22 @@ namespace TinyPG.Highlighter
 				{ // Choice Rule
 					case TokenType.GRAMMARCOMMENTLINE:
 						tok = scanner.Scan(TokenType.GRAMMARCOMMENTLINE); // Terminal Rule: GRAMMARCOMMENTLINE
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARCOMMENTLINE) {
+						if (tok.Type != TokenType.GRAMMARCOMMENTLINE)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARCOMMENTLINE.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.GRAMMARCOMMENTBLOCK:
 						tok = scanner.Scan(TokenType.GRAMMARCOMMENTBLOCK); // Terminal Rule: GRAMMARCOMMENTBLOCK
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARCOMMENTBLOCK) {
+						if (tok.Type != TokenType.GRAMMARCOMMENTBLOCK)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARCOMMENTBLOCK.ToString(), 0x1001, tok));
 							return;
 						}
@@ -147,22 +154,25 @@ namespace TinyPG.Highlighter
 		private void ParseDirectiveBlock(ParseNode parent) // NonTerminalSymbol: DirectiveBlock
 		{
 			Token tok;
+#pragma warning disable 0168 //Suppress "The variable 'n' is declared but never used" warning.
 			ParseNode n;
+#pragma warning restore 0168
 			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType.DirectiveBlock), "DirectiveBlock");
 			parent.Nodes.Add(node);
 
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.Scan(TokenType.DIRECTIVEOPEN); // Terminal Rule: DIRECTIVEOPEN
-			n = node.CreateNode(tok, tok.ToString() );
+			n = node.CreateNode(tok, tok.ToString());
 			node.Token.UpdateRange(tok);
 			node.Nodes.Add(n);
-			if (tok.Type != TokenType.DIRECTIVEOPEN) {
+			if (tok.Type != TokenType.DIRECTIVEOPEN)
+			{
 				tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DIRECTIVEOPEN.ToString(), 0x1001, tok));
 				return;
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.WHITESPACE, TokenType.DIRECTIVEKEYWORD, TokenType.DIRECTIVESYMBOL, TokenType.DIRECTIVENONKEYWORD, TokenType.DIRECTIVESTRING); // ZeroOrMore Rule
 			while (tok.Type == TokenType.WHITESPACE
 				|| tok.Type == TokenType.DIRECTIVEKEYWORD
@@ -175,50 +185,55 @@ namespace TinyPG.Highlighter
 				{ // Choice Rule
 					case TokenType.WHITESPACE:
 						tok = scanner.Scan(TokenType.WHITESPACE); // Terminal Rule: WHITESPACE
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.WHITESPACE) {
+						if (tok.Type != TokenType.WHITESPACE)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.WHITESPACE.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DIRECTIVEKEYWORD:
 						tok = scanner.Scan(TokenType.DIRECTIVEKEYWORD); // Terminal Rule: DIRECTIVEKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DIRECTIVEKEYWORD) {
+						if (tok.Type != TokenType.DIRECTIVEKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DIRECTIVEKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DIRECTIVESYMBOL:
 						tok = scanner.Scan(TokenType.DIRECTIVESYMBOL); // Terminal Rule: DIRECTIVESYMBOL
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DIRECTIVESYMBOL) {
+						if (tok.Type != TokenType.DIRECTIVESYMBOL)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DIRECTIVESYMBOL.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DIRECTIVENONKEYWORD:
 						tok = scanner.Scan(TokenType.DIRECTIVENONKEYWORD); // Terminal Rule: DIRECTIVENONKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DIRECTIVENONKEYWORD) {
+						if (tok.Type != TokenType.DIRECTIVENONKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DIRECTIVENONKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DIRECTIVESTRING:
 						tok = scanner.Scan(TokenType.DIRECTIVESTRING); // Terminal Rule: DIRECTIVESTRING
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DIRECTIVESTRING) {
+						if (tok.Type != TokenType.DIRECTIVESTRING)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DIRECTIVESTRING.ToString(), 0x1001, tok));
 							return;
 						}
@@ -227,18 +242,19 @@ namespace TinyPG.Highlighter
 						tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found.", 0x0002, tok));
 						break;
 				} // Choice Rule
-			tok = scanner.LookAhead(TokenType.WHITESPACE, TokenType.DIRECTIVEKEYWORD, TokenType.DIRECTIVESYMBOL, TokenType.DIRECTIVENONKEYWORD, TokenType.DIRECTIVESTRING); // ZeroOrMore Rule
+				tok = scanner.LookAhead(TokenType.WHITESPACE, TokenType.DIRECTIVEKEYWORD, TokenType.DIRECTIVESYMBOL, TokenType.DIRECTIVENONKEYWORD, TokenType.DIRECTIVESTRING); // ZeroOrMore Rule
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.DIRECTIVECLOSE); // Option Rule
 			if (tok.Type == TokenType.DIRECTIVECLOSE)
 			{
 				tok = scanner.Scan(TokenType.DIRECTIVECLOSE); // Terminal Rule: DIRECTIVECLOSE
-				n = node.CreateNode(tok, tok.ToString() );
+				n = node.CreateNode(tok, tok.ToString());
 				node.Token.UpdateRange(tok);
 				node.Nodes.Add(n);
-				if (tok.Type != TokenType.DIRECTIVECLOSE) {
+				if (tok.Type != TokenType.DIRECTIVECLOSE)
+				{
 					tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DIRECTIVECLOSE.ToString(), 0x1001, tok));
 					return;
 				}
@@ -250,7 +266,9 @@ namespace TinyPG.Highlighter
 		private void ParseGrammarBlock(ParseNode parent) // NonTerminalSymbol: GrammarBlock
 		{
 			Token tok;
+#pragma warning disable 0168 //Suppress "The variable 'n' is declared but never used" warning.
 			ParseNode n;
+#pragma warning restore 0168
 			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType.GrammarBlock), "GrammarBlock");
 			parent.Nodes.Add(node);
 
@@ -260,50 +278,55 @@ namespace TinyPG.Highlighter
 				{ // Choice Rule
 					case TokenType.GRAMMARSTRING:
 						tok = scanner.Scan(TokenType.GRAMMARSTRING); // Terminal Rule: GRAMMARSTRING
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARSTRING) {
+						if (tok.Type != TokenType.GRAMMARSTRING)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARSTRING.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.GRAMMARARROW:
 						tok = scanner.Scan(TokenType.GRAMMARARROW); // Terminal Rule: GRAMMARARROW
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARARROW) {
+						if (tok.Type != TokenType.GRAMMARARROW)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARARROW.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.GRAMMARNONKEYWORD:
 						tok = scanner.Scan(TokenType.GRAMMARNONKEYWORD); // Terminal Rule: GRAMMARNONKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARNONKEYWORD) {
+						if (tok.Type != TokenType.GRAMMARNONKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARNONKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.GRAMMARKEYWORD:
 						tok = scanner.Scan(TokenType.GRAMMARKEYWORD); // Terminal Rule: GRAMMARKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARKEYWORD) {
+						if (tok.Type != TokenType.GRAMMARKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.GRAMMARSYMBOL:
 						tok = scanner.Scan(TokenType.GRAMMARSYMBOL); // Terminal Rule: GRAMMARSYMBOL
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.GRAMMARSYMBOL) {
+						if (tok.Type != TokenType.GRAMMARSYMBOL)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.GRAMMARSYMBOL.ToString(), 0x1001, tok));
 							return;
 						}
@@ -325,22 +348,25 @@ namespace TinyPG.Highlighter
 		private void ParseAttributeBlock(ParseNode parent) // NonTerminalSymbol: AttributeBlock
 		{
 			Token tok;
+#pragma warning disable 0168 //Suppress "The variable 'n' is declared but never used" warning.
 			ParseNode n;
+#pragma warning restore 0168
 			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType.AttributeBlock), "AttributeBlock");
 			parent.Nodes.Add(node);
 
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.Scan(TokenType.ATTRIBUTEOPEN); // Terminal Rule: ATTRIBUTEOPEN
-			n = node.CreateNode(tok, tok.ToString() );
+			n = node.CreateNode(tok, tok.ToString());
 			node.Token.UpdateRange(tok);
 			node.Nodes.Add(n);
-			if (tok.Type != TokenType.ATTRIBUTEOPEN) {
+			if (tok.Type != TokenType.ATTRIBUTEOPEN)
+			{
 				tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.ATTRIBUTEOPEN.ToString(), 0x1001, tok));
 				return;
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.ATTRIBUTEKEYWORD, TokenType.ATTRIBUTENONKEYWORD, TokenType.ATTRIBUTESYMBOL); // ZeroOrMore Rule
 			while (tok.Type == TokenType.ATTRIBUTEKEYWORD
 				|| tok.Type == TokenType.ATTRIBUTENONKEYWORD
@@ -351,30 +377,33 @@ namespace TinyPG.Highlighter
 				{ // Choice Rule
 					case TokenType.ATTRIBUTEKEYWORD:
 						tok = scanner.Scan(TokenType.ATTRIBUTEKEYWORD); // Terminal Rule: ATTRIBUTEKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.ATTRIBUTEKEYWORD) {
+						if (tok.Type != TokenType.ATTRIBUTEKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.ATTRIBUTEKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.ATTRIBUTENONKEYWORD:
 						tok = scanner.Scan(TokenType.ATTRIBUTENONKEYWORD); // Terminal Rule: ATTRIBUTENONKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.ATTRIBUTENONKEYWORD) {
+						if (tok.Type != TokenType.ATTRIBUTENONKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.ATTRIBUTENONKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.ATTRIBUTESYMBOL:
 						tok = scanner.Scan(TokenType.ATTRIBUTESYMBOL); // Terminal Rule: ATTRIBUTESYMBOL
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.ATTRIBUTESYMBOL) {
+						if (tok.Type != TokenType.ATTRIBUTESYMBOL)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.ATTRIBUTESYMBOL.ToString(), 0x1001, tok));
 							return;
 						}
@@ -383,18 +412,19 @@ namespace TinyPG.Highlighter
 						tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found.", 0x0002, tok));
 						break;
 				} // Choice Rule
-			tok = scanner.LookAhead(TokenType.ATTRIBUTEKEYWORD, TokenType.ATTRIBUTENONKEYWORD, TokenType.ATTRIBUTESYMBOL); // ZeroOrMore Rule
+				tok = scanner.LookAhead(TokenType.ATTRIBUTEKEYWORD, TokenType.ATTRIBUTENONKEYWORD, TokenType.ATTRIBUTESYMBOL); // ZeroOrMore Rule
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.ATTRIBUTECLOSE); // Option Rule
 			if (tok.Type == TokenType.ATTRIBUTECLOSE)
 			{
 				tok = scanner.Scan(TokenType.ATTRIBUTECLOSE); // Terminal Rule: ATTRIBUTECLOSE
-				n = node.CreateNode(tok, tok.ToString() );
+				n = node.CreateNode(tok, tok.ToString());
 				node.Token.UpdateRange(tok);
 				node.Nodes.Add(n);
-				if (tok.Type != TokenType.ATTRIBUTECLOSE) {
+				if (tok.Type != TokenType.ATTRIBUTECLOSE)
+				{
 					tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.ATTRIBUTECLOSE.ToString(), 0x1001, tok));
 					return;
 				}
@@ -406,22 +436,25 @@ namespace TinyPG.Highlighter
 		private void ParseCodeBlock(ParseNode parent) // NonTerminalSymbol: CodeBlock
 		{
 			Token tok;
+#pragma warning disable 0168 //Suppress "The variable 'n' is declared but never used" warning.
 			ParseNode n;
+#pragma warning restore 0168
 			ParseNode node = parent.CreateNode(scanner.GetToken(TokenType.CodeBlock), "CodeBlock");
 			parent.Nodes.Add(node);
 
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.Scan(TokenType.CODEBLOCKOPEN); // Terminal Rule: CODEBLOCKOPEN
-			n = node.CreateNode(tok, tok.ToString() );
+			n = node.CreateNode(tok, tok.ToString());
 			node.Token.UpdateRange(tok);
 			node.Nodes.Add(n);
-			if (tok.Type != TokenType.CODEBLOCKOPEN) {
+			if (tok.Type != TokenType.CODEBLOCKOPEN)
+			{
 				tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.CODEBLOCKOPEN.ToString(), 0x1001, tok));
 				return;
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.DOTNET_COMMENTLINE, TokenType.DOTNET_COMMENTBLOCK, TokenType.DOTNET_TYPES, TokenType.DOTNET_KEYWORD, TokenType.DOTNET_SYMBOL, TokenType.DOTNET_STRING, TokenType.DOTNET_NONKEYWORD); // ZeroOrMore Rule
 			while (tok.Type == TokenType.DOTNET_COMMENTLINE
 				|| tok.Type == TokenType.DOTNET_COMMENTBLOCK
@@ -436,70 +469,77 @@ namespace TinyPG.Highlighter
 				{ // Choice Rule
 					case TokenType.DOTNET_COMMENTLINE:
 						tok = scanner.Scan(TokenType.DOTNET_COMMENTLINE); // Terminal Rule: DOTNET_COMMENTLINE
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_COMMENTLINE) {
+						if (tok.Type != TokenType.DOTNET_COMMENTLINE)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_COMMENTLINE.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DOTNET_COMMENTBLOCK:
 						tok = scanner.Scan(TokenType.DOTNET_COMMENTBLOCK); // Terminal Rule: DOTNET_COMMENTBLOCK
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_COMMENTBLOCK) {
+						if (tok.Type != TokenType.DOTNET_COMMENTBLOCK)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_COMMENTBLOCK.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DOTNET_TYPES:
 						tok = scanner.Scan(TokenType.DOTNET_TYPES); // Terminal Rule: DOTNET_TYPES
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_TYPES) {
+						if (tok.Type != TokenType.DOTNET_TYPES)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_TYPES.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DOTNET_KEYWORD:
 						tok = scanner.Scan(TokenType.DOTNET_KEYWORD); // Terminal Rule: DOTNET_KEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_KEYWORD) {
+						if (tok.Type != TokenType.DOTNET_KEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_KEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DOTNET_SYMBOL:
 						tok = scanner.Scan(TokenType.DOTNET_SYMBOL); // Terminal Rule: DOTNET_SYMBOL
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_SYMBOL) {
+						if (tok.Type != TokenType.DOTNET_SYMBOL)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_SYMBOL.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DOTNET_STRING:
 						tok = scanner.Scan(TokenType.DOTNET_STRING); // Terminal Rule: DOTNET_STRING
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_STRING) {
+						if (tok.Type != TokenType.DOTNET_STRING)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_STRING.ToString(), 0x1001, tok));
 							return;
 						}
 						break;
 					case TokenType.DOTNET_NONKEYWORD:
 						tok = scanner.Scan(TokenType.DOTNET_NONKEYWORD); // Terminal Rule: DOTNET_NONKEYWORD
-						n = node.CreateNode(tok, tok.ToString() );
+						n = node.CreateNode(tok, tok.ToString());
 						node.Token.UpdateRange(tok);
 						node.Nodes.Add(n);
-						if (tok.Type != TokenType.DOTNET_NONKEYWORD) {
+						if (tok.Type != TokenType.DOTNET_NONKEYWORD)
+						{
 							tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.DOTNET_NONKEYWORD.ToString(), 0x1001, tok));
 							return;
 						}
@@ -508,18 +548,19 @@ namespace TinyPG.Highlighter
 						tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found.", 0x0002, tok));
 						break;
 				} // Choice Rule
-			tok = scanner.LookAhead(TokenType.DOTNET_COMMENTLINE, TokenType.DOTNET_COMMENTBLOCK, TokenType.DOTNET_TYPES, TokenType.DOTNET_KEYWORD, TokenType.DOTNET_SYMBOL, TokenType.DOTNET_STRING, TokenType.DOTNET_NONKEYWORD); // ZeroOrMore Rule
+				tok = scanner.LookAhead(TokenType.DOTNET_COMMENTLINE, TokenType.DOTNET_COMMENTBLOCK, TokenType.DOTNET_TYPES, TokenType.DOTNET_KEYWORD, TokenType.DOTNET_SYMBOL, TokenType.DOTNET_STRING, TokenType.DOTNET_NONKEYWORD); // ZeroOrMore Rule
 			}
 
-			 // Concat Rule
+			// Concat Rule
 			tok = scanner.LookAhead(TokenType.CODEBLOCKCLOSE); // Option Rule
 			if (tok.Type == TokenType.CODEBLOCKCLOSE)
 			{
 				tok = scanner.Scan(TokenType.CODEBLOCKCLOSE); // Terminal Rule: CODEBLOCKCLOSE
-				n = node.CreateNode(tok, tok.ToString() );
+				n = node.CreateNode(tok, tok.ToString());
 				node.Token.UpdateRange(tok);
 				node.Nodes.Add(n);
-				if (tok.Type != TokenType.CODEBLOCKCLOSE) {
+				if (tok.Type != TokenType.CODEBLOCKCLOSE)
+				{
 					tree.Errors.Add(new ParseError("Unexpected token '" + tok.Text.Replace("\n", "") + "' found. Expected " + TokenType.CODEBLOCKCLOSE.ToString(), 0x1001, tok));
 					return;
 				}

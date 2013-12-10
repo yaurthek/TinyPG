@@ -480,81 +480,81 @@ namespace TinyPG.Highlighter
 		{
 			switch (token.Type)
 			{
-                    case TokenType.GRAMMARCOMMENTLINE:
-                        sb.Append(@"{{\cf1 ");
-                        break;
-                    case TokenType.GRAMMARCOMMENTBLOCK:
-                        sb.Append(@"{{\cf2 ");
-                        break;
-                    case TokenType.DIRECTIVESTRING:
-                        sb.Append(@"{{\cf3 ");
-                        break;
-                    case TokenType.DIRECTIVEKEYWORD:
-                        sb.Append(@"{{\cf4 ");
-                        break;
-                    case TokenType.DIRECTIVEOPEN:
-                        sb.Append(@"{{\cf5 ");
-                        break;
-                    case TokenType.DIRECTIVECLOSE:
-                        sb.Append(@"{{\cf6 ");
-                        break;
-                    case TokenType.ATTRIBUTEKEYWORD:
-                        sb.Append(@"{{\cf7 ");
-                        break;
-                    case TokenType.CS_KEYWORD:
-                        sb.Append(@"{{\cf8 ");
-                        break;
-                    case TokenType.VB_KEYWORD:
-                        sb.Append(@"{{\cf9 ");
-                        break;
-                    case TokenType.DOTNET_KEYWORD:
-                        sb.Append(@"{{\cf10 ");
-                        break;
-                    case TokenType.DOTNET_TYPES:
-                        sb.Append(@"{{\cf11 ");
-                        break;
-                    case TokenType.CS_COMMENTLINE:
-                        sb.Append(@"{{\cf12 ");
-                        break;
-                    case TokenType.CS_COMMENTBLOCK:
-                        sb.Append(@"{{\cf13 ");
-                        break;
-                    case TokenType.CS_STRING:
-                        sb.Append(@"{{\cf14 ");
-                        break;
-                    case TokenType.VB_COMMENTLINE:
-                        sb.Append(@"{{\cf15 ");
-                        break;
-                    case TokenType.VB_COMMENTBLOCK:
-                        sb.Append(@"{{\cf16 ");
-                        break;
-                    case TokenType.VB_STRING:
-                        sb.Append(@"{{\cf17 ");
-                        break;
-                    case TokenType.DOTNET_COMMENTLINE:
-                        sb.Append(@"{{\cf18 ");
-                        break;
-                    case TokenType.DOTNET_COMMENTBLOCK:
-                        sb.Append(@"{{\cf19 ");
-                        break;
-                    case TokenType.DOTNET_STRING:
-                        sb.Append(@"{{\cf20 ");
-                        break;
-                    case TokenType.CODEBLOCKOPEN:
-                        sb.Append(@"{{\cf21 ");
-                        break;
-                    case TokenType.CODEBLOCKCLOSE:
-                        sb.Append(@"{{\cf22 ");
-                        break;
-                    case TokenType.GRAMMARKEYWORD:
-                        sb.Append(@"{{\cf23 ");
-                        break;
-                    case TokenType.GRAMMARARROW:
-                        sb.Append(@"{{\cf24 ");
-                        break;
-                    case TokenType.GRAMMARSTRING:
-                        sb.Append(@"{{\cf25 ");
-                        break;
+					case TokenType.GRAMMARCOMMENTLINE:
+						sb.Append(@"{{\cf1 ");
+						break;
+					case TokenType.GRAMMARCOMMENTBLOCK:
+						sb.Append(@"{{\cf2 ");
+						break;
+					case TokenType.DIRECTIVESTRING:
+						sb.Append(@"{{\cf3 ");
+						break;
+					case TokenType.DIRECTIVEKEYWORD:
+						sb.Append(@"{{\cf4 ");
+						break;
+					case TokenType.DIRECTIVEOPEN:
+						sb.Append(@"{{\cf5 ");
+						break;
+					case TokenType.DIRECTIVECLOSE:
+						sb.Append(@"{{\cf6 ");
+						break;
+					case TokenType.ATTRIBUTEKEYWORD:
+						sb.Append(@"{{\cf7 ");
+						break;
+					case TokenType.CS_KEYWORD:
+						sb.Append(@"{{\cf8 ");
+						break;
+					case TokenType.VB_KEYWORD:
+						sb.Append(@"{{\cf9 ");
+						break;
+					case TokenType.DOTNET_KEYWORD:
+						sb.Append(@"{{\cf10 ");
+						break;
+					case TokenType.DOTNET_TYPES:
+						sb.Append(@"{{\cf11 ");
+						break;
+					case TokenType.CS_COMMENTLINE:
+						sb.Append(@"{{\cf12 ");
+						break;
+					case TokenType.CS_COMMENTBLOCK:
+						sb.Append(@"{{\cf13 ");
+						break;
+					case TokenType.CS_STRING:
+						sb.Append(@"{{\cf14 ");
+						break;
+					case TokenType.VB_COMMENTLINE:
+						sb.Append(@"{{\cf15 ");
+						break;
+					case TokenType.VB_COMMENTBLOCK:
+						sb.Append(@"{{\cf16 ");
+						break;
+					case TokenType.VB_STRING:
+						sb.Append(@"{{\cf17 ");
+						break;
+					case TokenType.DOTNET_COMMENTLINE:
+						sb.Append(@"{{\cf18 ");
+						break;
+					case TokenType.DOTNET_COMMENTBLOCK:
+						sb.Append(@"{{\cf19 ");
+						break;
+					case TokenType.DOTNET_STRING:
+						sb.Append(@"{{\cf20 ");
+						break;
+					case TokenType.CODEBLOCKOPEN:
+						sb.Append(@"{{\cf21 ");
+						break;
+					case TokenType.CODEBLOCKCLOSE:
+						sb.Append(@"{{\cf22 ");
+						break;
+					case TokenType.GRAMMARKEYWORD:
+						sb.Append(@"{{\cf23 ");
+						break;
+					case TokenType.GRAMMARARROW:
+						sb.Append(@"{{\cf24 ");
+						break;
+					case TokenType.GRAMMARSTRING:
+						sb.Append(@"{{\cf25 ");
+						break;
 
 				default:
 					sb.Append(@"{{\cf0 ");
