@@ -27,10 +27,6 @@ These are the new features and fixes we have added to the original code:
  - Command line building of parsers.
  - IDE expression evaluator now include line and column numbers in errors.
  - Unexpected token errors now display the offending character.
+ - New  `<% @Evaluation Generate="True" %>` directive allowing to disable the generation of the evaluation code.
 
-
-### Downloads
-
-The latest source code can be found in [zip form here](https://github.com/SickheadGames/TinyPG/archive/master.zip).
-
-The latest binaries can be found in the [build artifacts](http://teamcity.sickhead.com/viewType.html?buildTypeId=bt15&branch_project5=master).
+# Warning: The VB templates are currently not up to date, and untested.
