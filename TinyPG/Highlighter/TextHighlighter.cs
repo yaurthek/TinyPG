@@ -401,7 +401,7 @@ namespace TinyPG.Highlighter
 		}
 
 		// thread start for the automatic highlighting
-		private static object treelock = new object();
+		public static object treelock = new object(); // made specifically public for TinyPG main form
 		private bool isDisposing;
 		private bool textChanged;
 		private string currentText;
