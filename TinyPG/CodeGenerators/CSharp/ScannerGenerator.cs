@@ -34,20 +34,20 @@ namespace TinyPG.CodeGenerators.CSharp
 				fileandline = "		private readonly TokenType FileAndLine = TokenType." + Grammar.FileAndLine.Name + ";";
 
 			// build system tokens
-			tokentype.AppendLine("\r\n			//Non terminal tokens:");
-			tokentype.AppendLine(Helper.Outline("_NONE_", 3, "= 0,", 5));
-			tokentype.AppendLine(Helper.Outline("_UNDETERMINED_", 3, "= 1,", 5));
+			tokentype.AppendLine("\r\n		//Non terminal tokens:");
+			tokentype.AppendLine(Helper.Outline("_NONE_", 2, " = 0,", 5));
+			tokentype.AppendLine(Helper.Outline("_UNDETERMINED_", 2, " = 1,", 5));
 
 			// build non terminal tokens
-			tokentype.AppendLine("\r\n			//Non terminal tokens:");
+			tokentype.AppendLine("\r\n		//Non terminal tokens:");
 			foreach (Symbol s in Grammar.GetNonTerminals())
 			{
-				tokentype.AppendLine(Helper.Outline(s.Name, 3, "= " + String.Format("{0:d},", counter), 5));
+				tokentype.AppendLine(Helper.Outline(s.Name, 2, " = " + String.Format("{0:d},", counter), 5));
 				counter++;
 			}
 
 			// build terminal tokens
-			tokentype.AppendLine("\r\n			//Terminal tokens:");
+			tokentype.AppendLine("\r\n		//Terminal tokens:");
 			bool first = true;
 			foreach (TerminalSymbol s in Grammar.GetTerminals())
 			{
@@ -64,7 +64,7 @@ namespace TinyPG.CodeGenerators.CSharp
 				if (first) first = false;
 				else tokentype.AppendLine(",");
 
-				tokentype.Append(Helper.Outline(s.Name, 3, "= " + String.Format("{0:d}", counter), 5));
+				tokentype.Append(Helper.Outline(s.Name, 2, " = " + String.Format("{0:d}", counter), 5));
 				counter++;
 			}
 

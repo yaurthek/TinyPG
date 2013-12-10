@@ -30,7 +30,7 @@ namespace TinyPG.CodeGenerators.CSharp
 
 			if (Debug)
 			{
-				parser = parser.Replace(@"<%Namespace%>", "TinyPG.Debug");
+				parser = parser.Replace(@"<%Namespace%>", " TinyPG.Debug");
 				parser = parser.Replace(@"<%IParser%>", " : TinyPG.Debug.IParser");
 				parser = parser.Replace(@"<%IParseTree%>", "TinyPG.Debug.IParseTree");
 
@@ -76,17 +76,18 @@ namespace TinyPG.CodeGenerators.CSharp
 			int i = 0;
 			Symbols firsts = null;
 			StringBuilder sb = new StringBuilder();
-			string Indent = IndentTabs(indent);
+			string Indent = Helper.Indent(indent);
 
 			switch (r.Type)
 			{
 				case RuleType.Terminal:
 					// expecting terminal, so scan it.
 					sb.AppendLine(Indent + "tok = scanner.Scan(TokenType." + r.Symbol.Name + ");" + Helper.AddComment("Terminal Rule: " + r.Symbol.Name));
-					sb.AppendLine(Indent + "n = node.CreateNode(tok, tok.ToString() );");
+					sb.AppendLine(Indent + "n = node.CreateNode(tok, tok.ToString());");
 					sb.AppendLine(Indent + "node.Token.UpdateRange(tok);");
 					sb.AppendLine(Indent + "node.Nodes.Add(n);");
-					sb.AppendLine(Indent + "if (tok.Type != TokenType." + r.Symbol.Name + ") {");
+					sb.AppendLine(Indent + "if (tok.Type != TokenType." + r.Symbol.Name + ")");
+					sb.AppendLine(Indent + "{");
 					sb.AppendLine(Indent + "	tree.Errors.Add(new ParseError(\"Unexpected token '\" + tok.Text.Replace(\"\\n\", \"\") + \"' found. Expected \" + TokenType." + r.Symbol.Name + ".ToString(), 0x1001, tok));");
 					sb.AppendLine(Indent + "	return;");
 					sb.AppendLine(Indent + "}");
@@ -98,7 +99,7 @@ namespace TinyPG.CodeGenerators.CSharp
 					foreach (Rule rule in r.Rules)
 					{
 						sb.AppendLine();
-						sb.AppendLine(Indent + Helper.AddComment("Concat Rule"));
+						sb.AppendLine(Indent + Helper.AddComment("Concat Rule", false));
 						sb.Append(GenerateProductionRuleCode(rule, indent));
 					}
 					break;
@@ -134,7 +135,7 @@ namespace TinyPG.CodeGenerators.CSharp
 					}
 
 					i = 0;
-					sb.Append(Indent + "tok = scanner.LookAhead(");
+					sb.Append(Helper.Indent(indent + 1) + "tok = scanner.LookAhead(");
 					foreach (TerminalSymbol s in firsts)
 					{
 						if (i == 0)
@@ -246,14 +247,6 @@ namespace TinyPG.CodeGenerators.CSharp
 			return sb.ToString();
 		}
 
-		// replaces tabs by spaces, so outlining is more consistent
-		public static string IndentTabs(int indent)
-		{
-			string t = "";
-			for (int i = 0; i < indent; i++)
-				t += "	";
 
-			return t;
-		}
 	}
 }

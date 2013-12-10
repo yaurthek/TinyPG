@@ -68,7 +68,7 @@ namespace <%Namespace%>
 			return t;
 		}
 
-		 /// <summary>
+		/// <summary>
 		/// executes a lookahead of the next token
 		/// and will advance the scan on the input string
 		/// </summary>
@@ -101,8 +101,8 @@ namespace <%Namespace%>
 
 			// this prevents double scanning and matching
 			// increased performance
-			if (LookAheadToken != null 
-				&& LookAheadToken.Type != TokenType._UNDETERMINED_ 
+			if (LookAheadToken != null
+				&& LookAheadToken.Type != TokenType._UNDETERMINED_
 				&& LookAheadToken.Type != TokenType._NONE_) return LookAheadToken;
 
 			// if no scantokens specified, then scan for all of them (= backward compatible)
@@ -127,10 +127,10 @@ namespace <%Namespace%>
 				{
 					Regex r = Patterns[scantokens[i]];
 					Match m = r.Match(input);
-					if (m.Success && m.Index == 0 && ((m.Length > len) || (scantokens[i] < index && m.Length == len )))
+					if (m.Success && m.Index == 0 && ((m.Length > len) || (scantokens[i] < index && m.Length == len)))
 					{
 						len = m.Length;
-						index = scantokens[i];  
+						index = scantokens[i];
 					}
 				}
 

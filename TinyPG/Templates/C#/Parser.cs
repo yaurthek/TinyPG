@@ -7,17 +7,17 @@ namespace <%Namespace%>
 {
 	#region Parser
 
-	public partial class Parser <%IParser%>
+	public partial class Parser<%IParser%>
 	{
 		private Scanner scanner;
 		private ParseTree tree;
-		
+
 		public Parser(Scanner scanner)
 		{
 			this.scanner = scanner;
 		}
 
-		 public <%IParseTree%> Parse(string input)
+		public <%IParseTree%> Parse(string input)
 		{
 			return Parse(input, "", new ParseTree());
 		}

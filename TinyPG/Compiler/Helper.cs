@@ -37,7 +37,7 @@ namespace System.Text
 		{
 			string r = Indent(indent1);
 			r += text1;
-			r = r.PadRight((indent2 * 4) % 256, ' ');
+			r = r.PadRight((indent2) % 256, '\t');
 			r += text2;
 			return r;
 		}
@@ -46,7 +46,7 @@ namespace System.Text
 		{
 			string t = "";
 			for (int i = 0; i < indentcount; i++)
-				t += "    ";
+				t += "\t";
 
 			return t;
 		}
@@ -57,18 +57,14 @@ namespace System.Text
 		/// </summary>
 		/// <param name="comment">the comment to write to the file</param>
 		/// <returns></returns>
-		public static string AddComment(string comment)
+		public static string AddComment(string comment, bool startWithSpace = true)
 		{
-			return AddComment("//", comment);
+			return AddComment("//", comment, startWithSpace);
 		}
 
-		public static string AddComment(string commenter, string comment)
+		public static string AddComment(string commenter, string comment, bool startWithSpace = true)
 		{
-#if DEBUG
-			return " " + commenter + " " + comment;
-#else
-            return "";
-#endif
+			return (startWithSpace ? " " : "") + commenter + " " + comment;
 		}
 	}
 }

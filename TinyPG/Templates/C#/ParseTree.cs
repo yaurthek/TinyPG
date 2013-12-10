@@ -25,13 +25,13 @@ namespace <%Namespace%>
 		public string Message { get; private set; }
 
 		// just for the sake of serialization
-		public ParseError() {}
+		public ParseError() { }
 
-		public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) {}
+		public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) { }
 
-		public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) {}
+		public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) { }
 
-		public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) {}
+		public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) { }
 
 		public ParseError(string message, int code, string file, int line, int col, int pos, int length)
 		{
@@ -53,7 +53,8 @@ namespace <%Namespace%>
 
 		public List<Token> Skipped { get; set; }
 
-		public ParseTree() : base(new Token(), "ParseTree")
+		public ParseTree()
+			: base(new Token(), "ParseTree")
 		{
 			Token.Type = TokenType.Start;
 			Token.Text = "Root";
@@ -70,7 +71,6 @@ namespace <%Namespace%>
 
 		private void PrintNode(StringBuilder sb, ParseNode node, int indent)
 		{
-			
 			string space = "".PadLeft(indent, ' ');
 
 			sb.Append(space);
@@ -79,7 +79,7 @@ namespace <%Namespace%>
 			foreach (ParseNode n in node.Nodes)
 				PrintNode(sb, n, indent + 2);
 		}
-		
+
 		/// <summary>
 		/// this is the entry point for executing and evaluating the parse tree.
 		/// </summary>
@@ -95,9 +95,9 @@ namespace <%Namespace%>
 	[XmlInclude(typeof(ParseTree))]
 	public partial class ParseNode<%IParseNode%>
 	{
-		<%ITokenGet%>
+<%ITokenGet%>
 		public List<ParseNode> Nodes { get; protected set; }
-		<%INodesGet%>
+<%INodesGet%>
 		[XmlIgnore] // avoid circular references when serializing
 		public ParseNode Parent { get; set; }
 		public Token Token { get; set; } // the token/rule
@@ -106,7 +106,7 @@ namespace <%Namespace%>
 		/// text to display in parse tree 
 		/// </summary>
 		[XmlIgnore] // skip redundant text (is part of Token)
-		public string Text { get; set; } 
+		public string Text { get; set; }
 
 		public virtual ParseNode CreateNode(Token token, string text)
 		{
@@ -121,7 +121,7 @@ namespace <%Namespace%>
 			this.Text = text;
 			this.Nodes = new List<ParseNode>();
 		}
-		
+
 		public override string ToString()
 		{
 			return this.Text ?? "";
@@ -175,6 +175,6 @@ namespace <%Namespace%>
 
 <%VirtualEvalMethods%>
 	}
-	
+
 	#endregion ParseTree
 }
