@@ -45,8 +45,8 @@ namespace TinyPG.Compiler
         protected GrammarNode(Token token, string text)
         {
             Token = token;
-            this.text = text;
-            nodes = new List<ParseNode>();
+            this.Text = text;
+            Nodes = new List<ParseNode>();
         }
 
         /// <summary>

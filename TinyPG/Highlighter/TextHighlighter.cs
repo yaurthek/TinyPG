@@ -298,11 +298,11 @@ namespace TinyPG.Highlighter
         {
             if (node == null) return null;
 
-            if (node.Token.StartPos <= posstart && (node.Token.StartPos + node.Token.Length) >= posstart)
+            if (node.Token.StartPosition <= posstart && (node.Token.StartPosition + node.Token.Length) >= posstart)
             {
                 foreach (ParseNode n in node.Nodes)
                 {
-                    if (n.Token.StartPos <= posstart && (n.Token.StartPos + n.Token.Length) >= posstart)
+                    if (n.Token.StartPosition <= posstart && (n.Token.StartPosition + n.Token.Length) >= posstart)
                         return FindNode(n, posstart);
                 }
                 return node;

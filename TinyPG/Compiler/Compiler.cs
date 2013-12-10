@@ -156,7 +156,7 @@ namespace TinyPG.Compiler
             compilerresult.ParseTree = itree;
             Type treetype = treeinstance.GetType();
 
-            List<IParseError> errors = (List<IParseError>)treetype.InvokeMember("Errors", BindingFlags.GetField, null, treeinstance, null);
+            List<IParseError> errors = (List<IParseError>)treetype.InvokeMember("Errors", BindingFlags.GetProperty, null, treeinstance, null);
 
             if (textHighlight != null && errors.Count == 0)
             {

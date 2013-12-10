@@ -16,44 +16,32 @@ namespace TinyPG
     [Serializable]
     public class ParseError
     {
-        private string file;
-        private string message;
-        private int code;
-        private int line;
-        private int col;
-        private int pos;
-        private int length;
-
-        public string File { get { return file; } }
-        public int Code { get { return code; } }
-        public int Line { get { return line; } }
-        public int Column { get { return col; } }
-        public int Position { get { return pos; } }
-        public int Length { get { return length; } }
-        public string Message { get { return message; } }
+        public string File { get; private set; }
+        public int Code { get; private set; }
+        public int Line { get; private set; }
+        public int Column { get; private set; }
+        public int Position { get; private set; }
+        public int Length { get; private set; }
+        public string Message { get; private set; }
 
         // just for the sake of serialization
-        public ParseError()
-        {
-        }
+        public ParseError() {}
 
-        public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token)
-        {
-        }
+        public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) {}
 
-        public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPos, token.Length)
-        {
-        }
+        public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) {}
 
-        public ParseError(string message, int code, string file = "", int line = 0, int col = 0, int pos = 0, int length = 0)
+        public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) {}
+
+        public ParseError(string message, int code, string file, int line, int col, int pos, int length)
         {
-            this.file = file;
-            this.message = message;
-            this.code = code;
-            this.line = line;
-            this.col = col;
-            this.pos = pos;
-            this.length = length;
+            this.File = file;
+            this.Message = message;
+            this.Code = code;
+            this.Line = line;
+            this.Column = col;
+            this.Position = pos;
+            this.Length = length;
         }
     }
 
@@ -61,9 +49,9 @@ namespace TinyPG
     [Serializable]
     public partial class ParseTree : ParseNode
     {
-        public ParseErrors Errors;
+        public ParseErrors Errors { get; set; }
 
-        public List<Token> Skipped;
+        public List<Token> Skipped { get; set; }
 
         public ParseTree() : base(new Token(), "ParseTree")
         {
@@ -107,20 +95,18 @@ namespace TinyPG
     [XmlInclude(typeof(ParseTree))]
     public partial class ParseNode
     {
-        protected string text;
-        protected List<ParseNode> nodes;
         
-        public List<ParseNode> Nodes { get {return nodes;} }
+        public List<ParseNode> Nodes { get; protected set; }
         
         [XmlIgnore] // avoid circular references when serializing
-        public ParseNode Parent;
-        public Token Token; // the token/rule
+        public ParseNode Parent { get; set; }
+        public Token Token { get; set; } // the token/rule
 
+        /// <summary>
+        /// text to display in parse tree 
+        /// </summary>
         [XmlIgnore] // skip redundant text (is part of Token)
-        public string Text { // text to display in parse tree 
-            get { return text;} 
-            set { text = value; }
-        } 
+        public string Text { get; set; } 
 
         public virtual ParseNode CreateNode(Token token, string text)
         {
@@ -132,8 +118,13 @@ namespace TinyPG
         protected ParseNode(Token token, string text)
         {
             this.Token = token;
-            this.text = text;
-            this.nodes = new List<ParseNode>();
+            this.Text = text;
+            this.Nodes = new List<ParseNode>();
+        }
+        
+        public override string ToString()
+        {
+            return this.Text ?? "";
         }
 
         protected object GetValue(ParseTree tree, TokenType type, int index)
@@ -147,7 +138,7 @@ namespace TinyPG
             if (index < 0) return o;
 
             // left to right
-            foreach (ParseNode node in nodes)
+            foreach (ParseNode node in Nodes)
             {
                 if (node.Token.Type == type)
                 {

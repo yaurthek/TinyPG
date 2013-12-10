@@ -298,11 +298,11 @@ namespace <%Namespace%>
         {
             if (node == null) return null;
 
-            if (node.Token.StartPos <= posstart && (node.Token.StartPos + node.Token.Length) >= posstart)
+            if (node.Token.StartPosition <= posstart && (node.Token.StartPosition + node.Token.Length) >= posstart)
             {
                 foreach (ParseNode n in node.Nodes)
                 {
-                    if (n.Token.StartPos <= posstart && (n.Token.StartPos + n.Token.Length) >= posstart)
+                    if (n.Token.StartPosition <= posstart && (n.Token.StartPosition + n.Token.Length) >= posstart)
                         return FindNode(n, posstart);
                 }
                 return node;
@@ -344,6 +344,8 @@ namespace <%Namespace%>
             Unlock();
         }
 
+        public bool IsHighlighting { get; private set; }
+
         /// <summary>
         /// this method should be used only by HighlightText or RestoreState methods
         /// </summary>
@@ -370,8 +372,9 @@ namespace <%Namespace%>
             AddRtfHeader(sb);
             AddRtfEnd(sb);
 
+            IsHighlighting = true;
             Textbox.Rtf = sb.ToString();
-
+            IsHighlighting = false;
         }
 
                 /// <summary>
@@ -425,7 +428,7 @@ namespace <%Namespace%>
                     continue;
                 }
 
-                _tree = (ParseTree)Parser.Parse(_currenttext);
+                _tree = (ParseTree)Parser.Parse(_currenttext, string.Empty);
                 lock (treelock)
                 {
                     if (textChanged)

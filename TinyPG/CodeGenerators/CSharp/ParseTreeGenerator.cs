@@ -61,7 +61,7 @@ namespace TinyPG.CodeGenerators.CSharp
                 parsetree = parsetree.Replace(@"<%IParseNode%>", " : TinyPG.Debug.IParseNode");
                 parsetree = parsetree.Replace(@"<%ITokenGet%>", "public IToken IToken { get {return (IToken)Token;} }");
 
-                string inodes = "public List<IParseNode> INodes {get { return nodes.ConvertAll<IParseNode>( new Converter<ParseNode, IParseNode>( delegate(ParseNode n) { return (IParseNode)n; })); }}\r\n\r\n";
+                string inodes = "public List<IParseNode> INodes {get { return Nodes.ConvertAll<IParseNode>( new Converter<ParseNode, IParseNode>( delegate(ParseNode n) { return (IParseNode)n; })); }}\r\n\r\n";
                 parsetree = parsetree.Replace(@"<%INodesGet%>", inodes);
             }
             else

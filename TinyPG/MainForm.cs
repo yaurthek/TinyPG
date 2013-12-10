@@ -349,7 +349,7 @@ namespace TinyPG
             IParseNode ipn = e.Node.Tag as IParseNode;
             if (ipn == null) return;
 
-            textInput.Select(ipn.IToken.StartPos, ipn.IToken.EndPos - ipn.IToken.StartPos);
+            textInput.Select(ipn.IToken.StartPosition, ipn.IToken.EndPosition - ipn.IToken.StartPosition);
             textInput.ScrollToCaret();
         }
 

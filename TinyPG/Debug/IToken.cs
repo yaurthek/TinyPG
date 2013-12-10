@@ -12,8 +12,8 @@ namespace TinyPG.Debug
 {
     public interface IToken
     {
-        int StartPos { get; set; }
-        int EndPos { get; set; }
+		int StartPosition { get; set; }
+		int EndPosition { get; set; }
         int Length { get; }
         string Text { get; set; }
         string ToString();
