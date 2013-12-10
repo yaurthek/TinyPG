@@ -27,19 +27,19 @@ namespace TinyPG.CodeGenerators.CSharp
 
 			foreach (TerminalSymbol s in Grammar.SkipSymbols)
 			{
-				skiplist.AppendLine("            SkipList.Add(TokenType." + s.Name + ");");
+				skiplist.AppendLine("			SkipList.Add(TokenType." + s.Name + ");");
 			}
 
 			if (Grammar.FileAndLine != null)
-				fileandline = "        private readonly TokenType FileAndLine = TokenType." + Grammar.FileAndLine.Name + ";";
+				fileandline = "		private readonly TokenType FileAndLine = TokenType." + Grammar.FileAndLine.Name + ";";
 
 			// build system tokens
-			tokentype.AppendLine("\r\n            //Non terminal tokens:");
+			tokentype.AppendLine("\r\n			//Non terminal tokens:");
 			tokentype.AppendLine(Helper.Outline("_NONE_", 3, "= 0,", 5));
 			tokentype.AppendLine(Helper.Outline("_UNDETERMINED_", 3, "= 1,", 5));
 
 			// build non terminal tokens
-			tokentype.AppendLine("\r\n            //Non terminal tokens:");
+			tokentype.AppendLine("\r\n			//Non terminal tokens:");
 			foreach (Symbol s in Grammar.GetNonTerminals())
 			{
 				tokentype.AppendLine(Helper.Outline(s.Name, 3, "= " + String.Format("{0:d},", counter), 5));
@@ -47,19 +47,19 @@ namespace TinyPG.CodeGenerators.CSharp
 			}
 
 			// build terminal tokens
-			tokentype.AppendLine("\r\n            //Terminal tokens:");
+			tokentype.AppendLine("\r\n			//Terminal tokens:");
 			bool first = true;
 			foreach (TerminalSymbol s in Grammar.GetTerminals())
 			{
-				regexps.Append("            regex = new Regex(" + s.Expression.ToString() + ", RegexOptions.Compiled");
+				regexps.Append("			regex = new Regex(" + s.Expression.ToString() + ", RegexOptions.Compiled");
 
 				if (s.Attributes.ContainsKey("IgnoreCase"))
 					regexps.Append(" | RegexOptions.IgnoreCase");
 
 				regexps.Append(");\r\n");
 
-				regexps.Append("            Patterns.Add(TokenType." + s.Name + ", regex);\r\n");
-				regexps.Append("            Tokens.Add(TokenType." + s.Name + ");\r\n\r\n");
+				regexps.Append("			Patterns.Add(TokenType." + s.Name + ", regex);\r\n");
+				regexps.Append("			Tokens.Add(TokenType." + s.Name + ");\r\n\r\n");
 
 				if (first) first = false;
 				else tokentype.AppendLine(",");
@@ -77,18 +77,18 @@ namespace TinyPG.CodeGenerators.CSharp
 				scanner = scanner.Replace(@"<%FileAndLine%>", fileandline);
 				scanner = scanner.Replace(@"<%FileAndLineCheck%>",
 @"
-                // Check to see if the parsed token wants to 
-                // alter the file and line number.
-                if (tok.Type == FileAndLine)
-                {
-                    var match = Patterns[tok.Type].Match(tok.Text);
-                    var fileMatch = match.Groups[""File""];
-                    if (fileMatch.Success)
-                        currentFile = fileMatch.Value;
-                    var lineMatch = match.Groups[""Line""];
-                    if (lineMatch.Success)
-                        currentline = int.Parse(lineMatch.Value);
-                }");
+				// Check to see if the parsed token wants to 
+				// alter the file and line number.
+				if (tok.Type == FileAndLine)
+				{
+					var match = Patterns[tok.Type].Match(tok.Text);
+					var fileMatch = match.Groups[""File""];
+					if (fileMatch.Success)
+						currentFile = fileMatch.Value;
+					var lineMatch = match.Groups[""Line""];
+					if (lineMatch.Success)
+						currentline = int.Parse(lineMatch.Value);
+				}");
 			}
 			else
 			{

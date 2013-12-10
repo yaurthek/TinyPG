@@ -26,13 +26,13 @@ namespace TinyPG.CodeGenerators.CSharp
 			// build non terminal tokens
 			foreach (Symbol s in Grammar.GetNonTerminals())
 			{
-				evalsymbols.AppendLine("                case TokenType." + s.Name + ":");
-				evalsymbols.AppendLine("                    Value = Eval" + s.Name + "(tree, paramlist);");
-				//evalsymbols.AppendLine("                Value = Token.Text;");
-				evalsymbols.AppendLine("                    break;");
+				evalsymbols.AppendLine("				case TokenType." + s.Name + ":");
+				evalsymbols.AppendLine("					Value = Eval" + s.Name + "(tree, paramlist);");
+				//evalsymbols.AppendLine("				Value = Token.Text;");
+				evalsymbols.AppendLine("					break;");
 
-				evalmethods.AppendLine("        protected virtual object Eval" + s.Name + "(ParseTree tree, params object[] paramlist)");
-				evalmethods.AppendLine("        {");
+				evalmethods.AppendLine("		protected virtual object Eval" + s.Name + "(ParseTree tree, params object[] paramlist)");
+				evalmethods.AppendLine("		{");
 				if (s.CodeBlock != null)
 				{
 					// paste user code here
@@ -41,15 +41,15 @@ namespace TinyPG.CodeGenerators.CSharp
 				else
 				{
 					if (s.Name == "Start") // return a nice warning message from root object.
-						evalmethods.AppendLine("            return \"Could not interpret input; no semantics implemented.\";");
+						evalmethods.AppendLine("			return \"Could not interpret input; no semantics implemented.\";");
 					else
-						evalmethods.AppendLine("            foreach (var node in Nodes)\r\n" +
-											   "                node.Eval(tree, paramlist);\r\n" +
-											   "            return null;");
+						evalmethods.AppendLine("			foreach (var node in Nodes)\r\n" +
+											   "				node.Eval(tree, paramlist);\r\n" +
+											   "			return null;");
 
 					// otherwise simply not implemented!
 				}
-				evalmethods.AppendLine("        }\r\n");
+				evalmethods.AppendLine("		}\r\n");
 			}
 
 			if (Debug)
@@ -120,7 +120,7 @@ namespace TinyPG.CodeGenerators.CSharp
 				match = var.Match(codeblock);
 			}
 
-			codeblock = "            " + codeblock.Replace("\n", "\r\n        ");
+			codeblock = "			" + codeblock.Replace("\n", "\r\n		");
 			return codeblock;
 		}
 	}

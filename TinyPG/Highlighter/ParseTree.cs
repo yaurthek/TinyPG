@@ -7,232 +7,232 @@ using System.Xml.Serialization;
 
 namespace TinyPG.Highlighter
 {
-    #region ParseTree
-    [Serializable]
-    public class ParseErrors : List<ParseError>
-    {
-    }
+	#region ParseTree
+	[Serializable]
+	public class ParseErrors : List<ParseError>
+	{
+	}
 
-    [Serializable]
-    public class ParseError
-    {
-        public string File { get; private set; }
-        public int Code { get; private set; }
-        public int Line { get; private set; }
-        public int Column { get; private set; }
-        public int Position { get; private set; }
-        public int Length { get; private set; }
-        public string Message { get; private set; }
+	[Serializable]
+	public class ParseError
+	{
+		public string File { get; private set; }
+		public int Code { get; private set; }
+		public int Line { get; private set; }
+		public int Column { get; private set; }
+		public int Position { get; private set; }
+		public int Length { get; private set; }
+		public string Message { get; private set; }
 
-        // just for the sake of serialization
-        public ParseError() {}
+		// just for the sake of serialization
+		public ParseError() {}
 
-        public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) {}
+		public ParseError(string message, int code, ParseNode node) : this(message, code, node.Token) {}
 
-        public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) {}
+		public ParseError(string message, int code, Token token) : this(message, code, token.File, token.Line, token.Column, token.StartPosition, token.Length) {}
 
-        public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) {}
+		public ParseError(string message, int code) : this(message, code, string.Empty, 0, 0, 0, 0) {}
 
-        public ParseError(string message, int code, string file, int line, int col, int pos, int length)
-        {
-            this.File = file;
-            this.Message = message;
-            this.Code = code;
-            this.Line = line;
-            this.Column = col;
-            this.Position = pos;
-            this.Length = length;
-        }
-    }
+		public ParseError(string message, int code, string file, int line, int col, int pos, int length)
+		{
+			this.File = file;
+			this.Message = message;
+			this.Code = code;
+			this.Line = line;
+			this.Column = col;
+			this.Position = pos;
+			this.Length = length;
+		}
+	}
 
-    // rootlevel of the node tree
-    [Serializable]
-    public partial class ParseTree : ParseNode
-    {
-        public ParseErrors Errors { get; set; }
+	// rootlevel of the node tree
+	[Serializable]
+	public partial class ParseTree : ParseNode
+	{
+		public ParseErrors Errors { get; set; }
 
-        public List<Token> Skipped { get; set; }
+		public List<Token> Skipped { get; set; }
 
-        public ParseTree() : base(new Token(), "ParseTree")
-        {
-            Token.Type = TokenType.Start;
-            Token.Text = "Root";
-            Errors = new ParseErrors();
-        }
+		public ParseTree() : base(new Token(), "ParseTree")
+		{
+			Token.Type = TokenType.Start;
+			Token.Text = "Root";
+			Errors = new ParseErrors();
+		}
 
-        public string PrintTree()
-        {
-            StringBuilder sb = new StringBuilder();
-            int indent = 0;
-            PrintNode(sb, this, indent);
-            return sb.ToString();
-        }
+		public string PrintTree()
+		{
+			StringBuilder sb = new StringBuilder();
+			int indent = 0;
+			PrintNode(sb, this, indent);
+			return sb.ToString();
+		}
 
-        private void PrintNode(StringBuilder sb, ParseNode node, int indent)
-        {
-            
-            string space = "".PadLeft(indent, ' ');
+		private void PrintNode(StringBuilder sb, ParseNode node, int indent)
+		{
+			
+			string space = "".PadLeft(indent, ' ');
 
-            sb.Append(space);
-            sb.AppendLine(node.Text);
+			sb.Append(space);
+			sb.AppendLine(node.Text);
 
-            foreach (ParseNode n in node.Nodes)
-                PrintNode(sb, n, indent + 2);
-        }
-        
-        /// <summary>
-        /// this is the entry point for executing and evaluating the parse tree.
-        /// </summary>
-        /// <param name="paramlist">additional optional input parameters</param>
-        /// <returns>the output of the evaluation function</returns>
-        public object Eval(params object[] paramlist)
-        {
-            return Nodes[0].Eval(this, paramlist);
-        }
-    }
+			foreach (ParseNode n in node.Nodes)
+				PrintNode(sb, n, indent + 2);
+		}
+		
+		/// <summary>
+		/// this is the entry point for executing and evaluating the parse tree.
+		/// </summary>
+		/// <param name="paramlist">additional optional input parameters</param>
+		/// <returns>the output of the evaluation function</returns>
+		public object Eval(params object[] paramlist)
+		{
+			return Nodes[0].Eval(this, paramlist);
+		}
+	}
 
-    [Serializable]
-    [XmlInclude(typeof(ParseTree))]
-    public partial class ParseNode
-    {
-        
-        public List<ParseNode> Nodes { get; protected set; }
-        
-        [XmlIgnore] // avoid circular references when serializing
-        public ParseNode Parent { get; set; }
-        public Token Token { get; set; } // the token/rule
+	[Serializable]
+	[XmlInclude(typeof(ParseTree))]
+	public partial class ParseNode
+	{
+		
+		public List<ParseNode> Nodes { get; protected set; }
+		
+		[XmlIgnore] // avoid circular references when serializing
+		public ParseNode Parent { get; set; }
+		public Token Token { get; set; } // the token/rule
 
-        /// <summary>
-        /// text to display in parse tree 
-        /// </summary>
-        [XmlIgnore] // skip redundant text (is part of Token)
-        public string Text { get; set; } 
+		/// <summary>
+		/// text to display in parse tree 
+		/// </summary>
+		[XmlIgnore] // skip redundant text (is part of Token)
+		public string Text { get; set; } 
 
-        public virtual ParseNode CreateNode(Token token, string text)
-        {
-            ParseNode node = new ParseNode(token, text);
-            node.Parent = this;
-            return node;
-        }
+		public virtual ParseNode CreateNode(Token token, string text)
+		{
+			ParseNode node = new ParseNode(token, text);
+			node.Parent = this;
+			return node;
+		}
 
-        protected ParseNode(Token token, string text)
-        {
-            this.Token = token;
-            this.Text = text;
-            this.Nodes = new List<ParseNode>();
-        }
-        
-        public override string ToString()
-        {
-            return this.Text ?? "";
-        }
+		protected ParseNode(Token token, string text)
+		{
+			this.Token = token;
+			this.Text = text;
+			this.Nodes = new List<ParseNode>();
+		}
+		
+		public override string ToString()
+		{
+			return this.Text ?? "";
+		}
 
-        protected object GetValue(ParseTree tree, TokenType type, int index)
-        {
-            return GetValue(tree, type, ref index);
-        }
+		protected object GetValue(ParseTree tree, TokenType type, int index)
+		{
+			return GetValue(tree, type, ref index);
+		}
 
-        protected object GetValue(ParseTree tree, TokenType type, ref int index)
-        {
-            object o = null;
-            if (index < 0) return o;
+		protected object GetValue(ParseTree tree, TokenType type, ref int index)
+		{
+			object o = null;
+			if (index < 0) return o;
 
-            // left to right
-            foreach (ParseNode node in Nodes)
-            {
-                if (node.Token.Type == type)
-                {
-                    index--;
-                    if (index < 0)
-                    {
-                        o = node.Eval(tree);
-                        break;
-                    }
-                }
-            }
-            return o;
-        }
+			// left to right
+			foreach (ParseNode node in Nodes)
+			{
+				if (node.Token.Type == type)
+				{
+					index--;
+					if (index < 0)
+					{
+						o = node.Eval(tree);
+						break;
+					}
+				}
+			}
+			return o;
+		}
 
-        /// <summary>
-        /// this implements the evaluation functionality, cannot be used directly
-        /// </summary>
-        /// <param name="tree">the parsetree itself</param>
-        /// <param name="paramlist">optional input parameters</param>
-        /// <returns>a partial result of the evaluation</returns>
-        internal object Eval(ParseTree tree, params object[] paramlist)
-        {
-            object Value = null;
+		/// <summary>
+		/// this implements the evaluation functionality, cannot be used directly
+		/// </summary>
+		/// <param name="tree">the parsetree itself</param>
+		/// <param name="paramlist">optional input parameters</param>
+		/// <returns>a partial result of the evaluation</returns>
+		internal object Eval(ParseTree tree, params object[] paramlist)
+		{
+			object Value = null;
 
-            switch (Token.Type)
-            {
-                case TokenType.Start:
-                    Value = EvalStart(tree, paramlist);
-                    break;
-                case TokenType.CommentBlock:
-                    Value = EvalCommentBlock(tree, paramlist);
-                    break;
-                case TokenType.DirectiveBlock:
-                    Value = EvalDirectiveBlock(tree, paramlist);
-                    break;
-                case TokenType.GrammarBlock:
-                    Value = EvalGrammarBlock(tree, paramlist);
-                    break;
-                case TokenType.AttributeBlock:
-                    Value = EvalAttributeBlock(tree, paramlist);
-                    break;
-                case TokenType.CodeBlock:
-                    Value = EvalCodeBlock(tree, paramlist);
-                    break;
+			switch (Token.Type)
+			{
+				case TokenType.Start:
+					Value = EvalStart(tree, paramlist);
+					break;
+				case TokenType.CommentBlock:
+					Value = EvalCommentBlock(tree, paramlist);
+					break;
+				case TokenType.DirectiveBlock:
+					Value = EvalDirectiveBlock(tree, paramlist);
+					break;
+				case TokenType.GrammarBlock:
+					Value = EvalGrammarBlock(tree, paramlist);
+					break;
+				case TokenType.AttributeBlock:
+					Value = EvalAttributeBlock(tree, paramlist);
+					break;
+				case TokenType.CodeBlock:
+					Value = EvalCodeBlock(tree, paramlist);
+					break;
 
-                default:
-                    Value = Token.Text;
-                    break;
-            }
-            return Value;
-        }
+				default:
+					Value = Token.Text;
+					break;
+			}
+			return Value;
+		}
 
-        protected virtual object EvalStart(ParseTree tree, params object[] paramlist)
-        {
-            return "Could not interpret input; no semantics implemented.";
-        }
+		protected virtual object EvalStart(ParseTree tree, params object[] paramlist)
+		{
+			return "Could not interpret input; no semantics implemented.";
+		}
 
-        protected virtual object EvalCommentBlock(ParseTree tree, params object[] paramlist)
-        {
-            foreach (var node in Nodes)
-                node.Eval(tree, paramlist);
-            return null;
-        }
+		protected virtual object EvalCommentBlock(ParseTree tree, params object[] paramlist)
+		{
+			foreach (var node in Nodes)
+				node.Eval(tree, paramlist);
+			return null;
+		}
 
-        protected virtual object EvalDirectiveBlock(ParseTree tree, params object[] paramlist)
-        {
-            foreach (var node in Nodes)
-                node.Eval(tree, paramlist);
-            return null;
-        }
+		protected virtual object EvalDirectiveBlock(ParseTree tree, params object[] paramlist)
+		{
+			foreach (var node in Nodes)
+				node.Eval(tree, paramlist);
+			return null;
+		}
 
-        protected virtual object EvalGrammarBlock(ParseTree tree, params object[] paramlist)
-        {
-            foreach (var node in Nodes)
-                node.Eval(tree, paramlist);
-            return null;
-        }
+		protected virtual object EvalGrammarBlock(ParseTree tree, params object[] paramlist)
+		{
+			foreach (var node in Nodes)
+				node.Eval(tree, paramlist);
+			return null;
+		}
 
-        protected virtual object EvalAttributeBlock(ParseTree tree, params object[] paramlist)
-        {
-            foreach (var node in Nodes)
-                node.Eval(tree, paramlist);
-            return null;
-        }
+		protected virtual object EvalAttributeBlock(ParseTree tree, params object[] paramlist)
+		{
+			foreach (var node in Nodes)
+				node.Eval(tree, paramlist);
+			return null;
+		}
 
-        protected virtual object EvalCodeBlock(ParseTree tree, params object[] paramlist)
-        {
-            foreach (var node in Nodes)
-                node.Eval(tree, paramlist);
-            return null;
-        }
+		protected virtual object EvalCodeBlock(ParseTree tree, params object[] paramlist)
+		{
+			foreach (var node in Nodes)
+				node.Eval(tree, paramlist);
+			return null;
+		}
 
 
-    }
-    
-    #endregion ParseTree
+	}
+	
+	#endregion ParseTree
 }

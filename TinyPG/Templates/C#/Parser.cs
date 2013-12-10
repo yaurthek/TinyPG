@@ -5,41 +5,41 @@ using System.Collections.Generic;
 
 namespace <%Namespace%>
 {
-    #region Parser
+	#region Parser
 
-    public partial class Parser <%IParser%>
-    {
-        private Scanner scanner;
-        private ParseTree tree;
-        
-        public Parser(Scanner scanner)
-        {
-            this.scanner = scanner;
-        }
+	public partial class Parser <%IParser%>
+	{
+		private Scanner scanner;
+		private ParseTree tree;
+		
+		public Parser(Scanner scanner)
+		{
+			this.scanner = scanner;
+		}
 
-         public <%IParseTree%> Parse(string input)
-        {
-            return Parse(input, "", new ParseTree());
-        }
+		 public <%IParseTree%> Parse(string input)
+		{
+			return Parse(input, "", new ParseTree());
+		}
 
-        public <%IParseTree%> Parse(string input, string fileName)
-        {
-            return Parse(input, fileName, new ParseTree());
-        }
+		public <%IParseTree%> Parse(string input, string fileName)
+		{
+			return Parse(input, fileName, new ParseTree());
+		}
 
-        public <%IParseTree%> Parse(string input, string fileName, ParseTree tree)
-        {
-            scanner.Init(input, fileName);
+		public <%IParseTree%> Parse(string input, string fileName, ParseTree tree)
+		{
+			scanner.Init(input, fileName);
 
-            this.tree = tree;
-            ParseStart(tree);
-            tree.Skipped = scanner.Skipped;
+			this.tree = tree;
+			ParseStart(tree);
+			tree.Skipped = scanner.Skipped;
 
-            return tree;
-        }
+			return tree;
+		}
 
 <%ParseNonTerminals%>
-    }
+	}
 
-    #endregion Parser
+	#endregion Parser
 }
