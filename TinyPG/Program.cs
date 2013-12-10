@@ -121,7 +121,11 @@ namespace TinyPG
 				this.output.AppendLine("Compilation contains errors, could not compile.");
 			}
 
-			new GeneratedFilesWriter(grammar).Generate(false);
+			string error;
+			if (!new GeneratedFilesWriter(grammar).Generate(false, out error))
+			{
+				this.output.AppendLine(error);
+			}
 
 			return compiler.IsCompiled;
 		}

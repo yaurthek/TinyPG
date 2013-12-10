@@ -17,7 +17,7 @@ namespace TinyPG
 			this.grammar = grammar;
 		}
 
-		public void Generate(bool debug)
+		public bool Generate(bool debug, out string error)
 		{
 
 			ICodeGenerator generator;
@@ -34,11 +34,22 @@ namespace TinyPG
 
 				if (generator != null && d["Generate"].ToLower() == "true")
 				{
-					File.WriteAllText(
+					string folder = grammar.GetOutputPath();
+					if (folder != null && generator.FileName != null)
+					{
+						File.WriteAllText(
 						Path.Combine(grammar.GetOutputPath(), generator.FileName),
 						generator.Generate(grammar, debug));
+					}
+					else
+					{
+						error = "The output path does not exist!";
+						return false;
+					}
 				}
 			}
+			error = null;
+			return true;
 
 		}
 
