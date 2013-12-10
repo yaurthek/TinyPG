@@ -10,12 +10,12 @@
 using System;
 namespace TinyPG.Debug
 {
-    public interface IToken
-    {
+	public interface IToken
+	{
 		int StartPosition { get; set; }
 		int EndPosition { get; set; }
-        int Length { get; }
-        string Text { get; set; }
-        string ToString();
-    }
+		int Length { get; }
+		string Text { get; set; }
+		string ToString();
+	}
 }

@@ -11,8 +11,8 @@ using System;
 namespace TinyPG.Debug
 {
 
-    public interface IParser
-    {
-       // TinyPG.IParseTree Parse(string input);
-    }
+	public interface IParser
+	{
+		// TinyPG.IParseTree Parse(string input);
+	}
 }
