@@ -27,6 +27,7 @@ These are the new features and fixes we have added to the original code:
  - Command line building of parsers.
  - IDE expression evaluator now include line and column numbers in errors.
  - Unexpected token errors now display the offending character.
+ - The generated files are perfectly formatted (the Visual Studio auto formatter doesn't find anything to change)
  - New  `<% @Evaluation Generate="True" %>` directive allowing to disable the generation of the evaluation code.
 
 **Warning: The VB templates are currently not up to date, and untested.**
