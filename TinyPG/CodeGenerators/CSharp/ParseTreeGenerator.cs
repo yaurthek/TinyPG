@@ -71,7 +71,7 @@ namespace TinyPG.CodeGenerators.CSharp
 		}";
 
 				getvaluehelpers = @"
-protected object GetValue(ParseTree tree, TokenType type, int index)
+		protected object GetValue(ParseTree tree, TokenType type, int index)
 		{
 			return GetValue(tree, type, ref index);
 		}
@@ -123,7 +123,7 @@ protected object GetValue(ParseTree tree, TokenType type, int index)
 			return Value;
 		}");
 
-			}
+			} //generateEvaluationCode
 
 
 			if (Debug)
@@ -151,6 +151,7 @@ protected object GetValue(ParseTree tree, TokenType type, int index)
 			}
 
 			parsetree = parsetree.Replace(@"<%EvalEntryPoint%>", evalentrypoint);
+			parsetree = parsetree.Replace(@"<%EvalHelpers%>", getvaluehelpers);
 			parsetree = parsetree.Replace(@"<%EvalSwitch%>", evalswitch.ToString());
 			parsetree = parsetree.Replace(@"<%VirtualEvalMethods%>", evalmethods.ToString());
 

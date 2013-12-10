@@ -117,7 +117,7 @@ namespace <%Namespace%>
 		{
 			return this.Text ?? "";
 		}
-<%EvalSwitch%><%VirtualEvalMethods%>
+<%EvalHelpers%><%EvalSwitch%><%VirtualEvalMethods%>
 	}
 
 	#endregion ParseTree
